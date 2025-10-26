@@ -1,23 +1,27 @@
 #
 # donlp.py
 #
-#   use NLTK.vadar to extract names from the bible, insert them into an sqlite database with their sentiment scores
+#   use NLTK.vader to extract names from the bible, insert them into an sqlite database with their sentiment scores
 #   This makes use of the json formatted bible found here: https://github.com/honza/bibles/blob/master/ESV/ESV.json
 #
 
 import json
 import sqlite3
-import re, string
-import nltk
+import re
+import string
+from collections import defaultdict
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import SpaceTokenizer
 from nltk import pos_tag
-from nltk import PorterStemmer
 
-# analyze_line(line): 
+# Initialize sentiment analyzer once for performance
+sentiment_analyzer = SentimentIntensityAnalyzer()
+
+# analyze_line(line):
 #   Analyze a line of text, return names and sentiment polarity scores
 def analyze_line(line):
+    """Analyze a line of text and extract names with sentiment scores."""
     tokens = pos_tag(SpaceTokenizer().tokenize(line))
 
     names = []
@@ -25,7 +29,7 @@ def analyze_line(line):
         if token[1] == 'NNP':
             names.append(re.sub('['+string.punctuation+']', '', token[0]))
 
-    return {"names": names, "sentiment": SentimentIntensityAnalyzer().polarity_scores(line)}
+    return {"names": names, "sentiment": sentiment_analyzer.polarity_scores(line)}
 
 
 
