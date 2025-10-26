@@ -192,4 +192,4 @@ def export_json_data(output_dir='static/data'):
 
 # note: ESV.json has to be downloaded from : https://github.com/honza/bibles/blob/master/ESV/ESV.json
 build_bible_namedb('ESV.json')
-export_json_data()
+export_json_data('site/static/data')
